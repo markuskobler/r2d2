@@ -76,12 +76,30 @@ struct InnerPool<C, E, M, H> where C: Send, E: Send, M: PoolManager<C, E>, H: Er
     manager: M,
     error_handler: H,
     internals: Mutex<PoolInternals<C>>,
+    task_pool: Mutex<TaskPool>,
+}
+
+impl<C, E, M, H> InnerPool<C, E, M, H>
+        where C: Send, E: Send, M: PoolManager<C, E>, H: ErrorHandler<E> {
+    fn add_connection(&self) {
+        let inner = self.clone();
+        self.task_pool.lock().execute(proc() {
+            match inner.manager.connect() {
+                Ok(conn) => {
+                    let mut internals = inner.internals.lock();
+                    internals.conns.push_back(conn);
+                    internals.num_conns += 1;
+                    internals.cond.signal();
+                }
+                Err(err) => inner.error_handler.handle_error(err),
+            }
+        });
+    }
 }
 
 /// A generic connection pool.
 pub struct Pool<C, E, M, H> where C: Send, E: Send, M: PoolManager<C, E>, H: ErrorHandler<E> {
     inner: Arc<InnerPool<C, E, M, H>>,
-    task_pool: Mutex<TaskPool>,
 }
 
 impl<C, E, M, H> Pool<C, E, M, H>
@@ -103,18 +121,16 @@ impl<C, E, M, H> Pool<C, E, M, H>
             manager: manager,
             error_handler: error_handler,
             internals: Mutex::new(internals),
+            task_pool: Mutex::new(TaskPool::new(config.helper_tasks)),
         });
 
-        let pool = Pool {
-            inner: inner,
-            task_pool: Mutex::new(TaskPool::new(config.helper_tasks)),
-        };
-
         for _ in range(0, config.pool_size) {
-            pool.add_connection();
+            inner.add_connection();
         }
 
-        Ok(pool)
+        Ok(Pool {
+            inner: inner
+        })
     }
 
     /// Retrieves a connection from the pool.
@@ -156,21 +172,6 @@ impl<C, E, M, H> Pool<C, E, M, H>
             internals.conns.push_back(conn);
             internals.cond.signal();
         }
-    }
-
-    fn add_connection(&self) {
-        let inner = self.inner.clone();
-        self.task_pool.lock().execute(proc() {
-            match inner.manager.connect() {
-                Ok(conn) => {
-                    let mut internals = inner.internals.lock();
-                    internals.conns.push_back(conn);
-                    internals.num_conns += 1;
-                    internals.cond.signal();
-                }
-                Err(err) => inner.error_handler.handle_error(err),
-            }
-        });
     }
 }
 
