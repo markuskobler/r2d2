@@ -1,1 +1,1 @@
-{"name":"r2d2","counts":{"unstable":2,"stable":26,"unmarked":46},"submodules":[{"name":"config","counts":{"unstable":0,"stable":6,"unmarked":18},"submodules":[]}]}
+{"name":"r2d2","counts":{"deprecated":0,"unstable":2,"stable":26,"unmarked":46},"submodules":[{"name":"config","counts":{"deprecated":0,"unstable":0,"stable":6,"unmarked":18},"submodules":[]}]}
