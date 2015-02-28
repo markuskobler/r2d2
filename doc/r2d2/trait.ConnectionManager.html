@@ -43,7 +43,7 @@
     <section id='main' class="content trait">
 <h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>r2d2</a>::<wbr><a class='trait' href=''>ConnectionManager</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1142' href='../src/r2d2/lib.rs.html#27-50'>[src]</a></span></h1>
+        </span><a id='src-1143' href='../src/r2d2/lib.rs.html#27-53'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait ConnectionManager: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + 'static {
     type Connection: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static;
     type Error: 'static;
@@ -55,7 +55,9 @@
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.Connection' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type Connection: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static</code></h3><h3 id='associatedtype.Error' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type Error: 'static</code></h3></div>
+        <h3 id='associatedtype.Connection' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type Connection: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + 'static</code></h3><div class='docblock'><p>The connection type this manager deals with.</p>
+</div><h3 id='associatedtype.Error' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type Error: 'static</code></h3><div class='docblock'><p>The error type returned by <code>Connection</code>s.</p>
+</div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
         <h3 id='tymethod.connect' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.connect' class='fnname'>connect</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self::Connection, Self::Error&gt;</code></h3><div class='docblock'><p>Attempts to create a new connection.</p>
